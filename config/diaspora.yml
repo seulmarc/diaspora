@@ -36,7 +36,7 @@ configuration: ## Section
     ## However changing http to https is okay and has no consequences.
     ## If you do change it you have to start over as it's hardcoded into
     ## the database.
-    #url: "https://example.org/"
+    #url: "https://ec2-107-22-218-222.compute-1.amazonaws.com/"
     
     ## Setting the bundle of certificate authorities (CA) certificates.
     ## This is operating system specific.
@@ -66,35 +66,6 @@ configuration: ## Section
     ## all the time intensive jobs must be run inside the request cycle.
     ## So this is higly unrecommended for production setups.
     #single_process_mode: true
-
-    ## Sidekiq - background processing
-    sidekiq: ## Section
-      ## Number of parallel threads Sidekiq uses
-      ## If you touch this please set the pool setting
-      ## in your database.yml to a value that's at minimum
-      ## close to this! The default value is 5 but you can safely
-      ## increase it to 25 and more on a medium sized pod.
-      ## This applies per started Sidekiq worker, so if you set it to
-      ## 25 and start two workers you'll process up to 50 jobs in parallel.
-      #concurrency: 25
-
-      ## Number of times a job is retried
-      ## There's an exponential backoff, if you set this too
-      ## high you might get too many jobs in the queue
-      ## Set this to false to disable it completely 
-      #retry: 10
-
-      ## Namespace to use in Redis, useful if you need to run
-      ## multiple instances of Diaspora using the same Redis instance
-      #namespace: "diaspora"
-
-      ## Lines of backtrace that is stored on failure
-      ## Set this to false if you're not interested in this data to
-      ## reduce memory usage (and log size)
-      #backtrace: 15
-
-      ## Log file for Sidekiq
-      #log: "log/sidekiq.log"
     
     ## Use Amazon S3 instead of your local filesystem
     ## to handle uploaded pictures.
@@ -104,10 +75,6 @@ configuration: ## Section
       #secret: 'changeme'
       #bucket: 'my_photos'
       #region: 'us-east-1'
-
-      # Use max-age header on Amazon S3 resources.
-      # this would set a max-age value of 1 year
-      #cache : true
     
     ## Related to S3 you can set a url to redirect all requests to uploaded
     ## images to another host. If you for example set
@@ -149,18 +116,16 @@ configuration: ## Section
     ## Valid choices are 'mysql' and 'postgres'
     #database: 'mysql'
     
-    ## Number of Unicorn worker processes, increase this if
+    ## Number of unicorn worker processes, increase this if
     ## you have many users
     #unicorn_worker: 2
     
-    ## Embed a Sidekiq worker inside the unicorn process, useful for
+    ## Embed a resque worker inside the unicorn process, useful for
     ## minimal Heroku setups
-    #embed_sidekiq_worker: true
-
-    ## Number of Sidekiq worker processes
-    ## Most of the time you want to increase
-    ## environment.sidekiq.concurrency instead!
-    #sidekiq_workers: 1
+    #embed_resque_worker: true
+    
+    ## Number of resque workers to start
+    #resque_workers: 1
   
   ## Settings probably affecting the privacy of your users 
   privacy: ## Section
@@ -192,7 +157,7 @@ configuration: ## Section
   
     ## The name of your pod displayed in various locations,
     ## including the header.
-    #pod_name: "Diaspora*"
+    #pod_name: "CaboPod*"
     
     ## Set this to false to prevent people from signing up for your pod
     ## without an invitation. Note that this needs to be true even for
@@ -209,12 +174,12 @@ configuration: ## Section
     ## Settings about invitations
     invitations: ## Section
       
-      ## Set this to true if you want users to be able to send invites.
+      ## Set this to true if you want users to invite as many
+      ## people as they want.
       #open: true
       
       ## The default amount of invitiations an invite link has.
-      ## Every user has such a link. Default count is 25, uncomment to set
-      ## another value.
+      ## Every user has such a link. Only counts if open is false.
       #count: 25
     
     ## Paypal donations
@@ -231,7 +196,7 @@ configuration: ## Section
       #enable: false
       ## E-Mail address users can make suggestions about who should be
       ## in the spotlight to.
-      #suggest_email: 'admin@example.org'
+      #suggest_email: 'eventos@cabo-day-night.com'
     
     ## CURL debug
     ## Turn on extra verbose output when sending stuff. No you
@@ -245,7 +210,7 @@ configuration: ## Section
     #enable: true
     
     ## Sender address used in mail send by Diaspora
-    #sender_address: 'no-reply@example.org'
+    #sender_address: 'social@cabo-day-night.com'
     
     ## This selects which mailer should be used. Take 'smtp' for a smtp
     ## connection, 'sendmail' to use the sendmail binary or
@@ -257,7 +222,7 @@ configuration: ## Section
       ## Host and port of the smtp server handling outgoing mail.
       ## This should match the common name of the certificate
       ## the SMTP server sends. If he sends one.
-      #host: 'smtp.example.org'
+      #host: 'smtp.cabo-day-night.com'
       #port: 587
       
       ## Authentication required to send mail. Use one of 'plain',
@@ -267,14 +232,14 @@ configuration: ## Section
       
       ## Credentials to log in to the SMTP server - may be necessary if
       ## authentication is not 'none'
-      #username: 'changeme'
-      #password: 'changeme'
+      #username: 'social@cabo-day-night.com'
+      #password: 'cabopod1'
       
       ## Automatically enable TLS? Ignored if authentication is set to none
       #starttls_auto: true
       
       ## The domain for the HELO command if needed
-      #domain: 'smtp.example.org'
+      #domain: 'smtp.cabo-day-night.com'
       
       ## OpenSSL verify mode used when connecting to a
       ## SMTP server with TLS. Set this to none if you have
@@ -298,18 +263,18 @@ configuration: ## Section
     ## OAuth credentials for Facebook:
     facebook: ## Section
       #enable: true
-      #app_id: 'abcdef'
-      #secret: 'changeme'
+      #app_id: '139890339507837'
+      #secret: '05a0365f7d19a3256a5fd5bcf1ccd0cf'
     
     ## OAuth credentials for Twitter:
     twitter: ## Section
       #enable: true
-      #key: 'abcdef'
-      #secret: 'changeme'
+      #key: 'LR3WwET9PXA2g8dnlq2W4Q'
+      #secret: 'zHEUzhv1EcpX2U7AwSxpHIdRPgQogUYemVyN1Oy00'
     
     ## OAuth credentials for Tumblr
     tumblr: ## Section
-      #enable: true
+      #enable: false
       #key: 'abcdef'
       #secret: 'changeme'
   
@@ -323,7 +288,12 @@ configuration: ## Section
     #account: "podmaster"
 
     ## E-Mail address users can contact the administrator
-    #podmin_email: 'podmin@example.org'
+    #podmin_email: 'podmin@cabo-day-night.com'
+    
+    ## Resque is the background processing system used by Diaspora
+    ## Resque web is an admin tool for it. This settings decides whether
+    ## or not to inline it into Diaspora.
+    #inline_resque_web: true
   
 ## Here you can make overides to settings defined above if you need
 ## to have them different in different environments.
@@ -331,4 +301,4 @@ production: ## Section
   
 development: ## Section
   environment: ## Section
-    #redis_url: 'redis://production.example.org:6379'
+    #redis_url: 'redis://ec2-107-22-218-222.compute-1.amazonaws.com/'
